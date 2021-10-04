@@ -22,7 +22,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     message(STATUS "Compiler is Clang")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     message(STATUS "Compiler is GCC")
-    add_compile_options(-Wno-volatile -fcoroutines)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     message(STATUS "Compiler is Intel C++")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
@@ -74,3 +73,5 @@ install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lua/ DESTINATION lua/)
