@@ -7,7 +7,7 @@
 
 #include <openssl/ssl.h>
 
-#include "options.h"
+#include <options.h>
 
 /* If you need to generate these options again, see options.lua */
 

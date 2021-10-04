@@ -5,9 +5,9 @@
  *
  *--------------------------------------------------------------------------*/
 
-#include "compat.h"
-#include "options.h"
-#include "ec.h"
+#include <compat.h>
+#include <options.h>
+#include <ec.h>
 
 /**
  * Registre the module.

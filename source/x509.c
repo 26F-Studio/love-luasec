@@ -10,8 +10,8 @@
 #include <string.h>
 
 #if defined(WIN32)
-#include <ws2tcpip.h>
-#include <windows.h>
+#include <WS2tcpip.h>
+#include <Windows.h>
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -30,7 +30,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "x509.h"
+#include <x509.h>
 
 
 #ifndef LSEC_API_OPENSSL_1_1_0

@@ -2,10 +2,10 @@
 * Input/Output interface for Lua programs
 * LuaSocket toolkit
 \*=========================================================================*/
-#include "lua.h"
-#include "lauxlib.h"
+#include <lua.h>
+#include <lauxlib.h>
 
-#include "buffer.h"
+#include <luasocket/buffer.h>
 
 /*=========================================================================*\
 * Internal function prototypes

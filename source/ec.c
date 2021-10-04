@@ -1,6 +1,6 @@
 #include <openssl/objects.h>
 
-#include "ec.h"
+#include <ec.h>
 
 #ifndef OPENSSL_NO_EC
 

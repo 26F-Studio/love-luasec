@@ -9,15 +9,15 @@
 * (and the associated usocket.h and wsocket.h) factor these differences and
 * creates a interface compatible with the io.h module.
 \*=========================================================================*/
-#include "io.h"
+#include <io.h>
 
 /*=========================================================================*\
 * Platform specific compatibilization
 \*=========================================================================*/
 #ifdef _WIN32
-#include "wsocket.h"
+#include <luasocket/wsocket.h>
 #else
-#include "usocket.h"
+#include <luasocket/usocket.h>
 #endif
 
 /*=========================================================================*\
@@ -26,7 +26,7 @@
 * the timeout control into this module for these functions in
 * order to simplify the modules that use them. 
 \*=========================================================================*/
-#include "timeout.h"
+#include <luasocket/timeout.h>
 
 /* we are lazy... */
 typedef struct sockaddr SA;

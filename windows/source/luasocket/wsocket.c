@@ -7,7 +7,8 @@
 \*=========================================================================*/
 #include <string.h>
 
-#include "socket.h"
+#include <luasocket/socket.h>
+#include <luasocket/io.h>
 
 /* WinSock doesn't have a strerror... */
 static const char *wstrerror(int err);

@@ -6,10 +6,10 @@
 #include <limits.h>
 #include <float.h>
 
-#include "lua.h"
-#include "lauxlib.h"
+#include <lua.h>
+#include <lauxlib.h>
 
-#include "timeout.h"
+#include <luasocket/timeout.h>
 
 #ifdef _WIN32
 #include <windows.h>

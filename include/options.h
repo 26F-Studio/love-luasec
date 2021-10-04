@@ -8,7 +8,7 @@
  *
  *--------------------------------------------------------------------------*/
 
-#include "compat.h"
+#include <compat.h>
 
 struct lsec_ssl_option_s {
   const char *name;

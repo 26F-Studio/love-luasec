@@ -11,7 +11,7 @@
 #include <string.h>
 
 #if defined(WIN32)
-#include <winsock2.h>
+#include <WinSock2.h>
 #endif
 
 #include <openssl/ssl.h>
@@ -28,9 +28,9 @@
 #include <luasocket/timeout.h>
 #include <luasocket/socket.h>
 
-#include "x509.h"
-#include "context.h"
-#include "ssl.h"
+#include <x509.h>
+#include <context.h>
+#include <ssl.h>
 
 
 #ifndef LSEC_API_OPENSSL_1_1_0

@@ -13,9 +13,9 @@
 * is very simple.
 \*=========================================================================*/
 #include <stdio.h>
-#include "lua.h"
+#include <lua.h>
 
-#include "timeout.h"
+#include <luasocket/timeout.h>
 
 /* IO error codes */
 enum {

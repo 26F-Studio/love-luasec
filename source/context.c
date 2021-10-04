@@ -10,7 +10,7 @@
 #include <string.h>
 
 #if defined(WIN32)
-#include <windows.h>
+#include <Windows.h>
 #endif
 
 #include <openssl/ssl.h>
@@ -22,13 +22,13 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "compat.h"
-#include "context.h"
-#include "options.h"
+#include <compat.h>
+#include <context.h>
+#include <options.h>
 
 #ifndef OPENSSL_NO_EC
 #include <openssl/ec.h>
-#include "ec.h"
+#include <ec.h>
 #endif
 
 /*--------------------------- Auxiliary Functions ----------------------------*/

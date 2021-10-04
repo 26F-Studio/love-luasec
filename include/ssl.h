@@ -16,8 +16,8 @@
 #include <luasocket/timeout.h>
 #include <luasocket/socket.h>
 
-#include "compat.h"
-#include "context.h"
+#include <compat.h>
+#include <context.h>
 
 #define LSEC_STATE_NEW       1
 #define LSEC_STATE_CONNECTED 2

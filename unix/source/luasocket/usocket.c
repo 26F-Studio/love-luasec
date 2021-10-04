@@ -9,7 +9,7 @@
 #include <string.h> 
 #include <signal.h>
 
-#include "socket.h"
+#include <luasocket/socket.h>
 
 /*-------------------------------------------------------------------------*\
 * Wait for readable/writable/connected socket with timeout
