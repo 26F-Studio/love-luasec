@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/love-lua" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/solar-cmake" vcs="Git" />
   </component>
 </project>

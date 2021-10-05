@@ -11,7 +11,9 @@ option(LUASEC_BUILD_STATIC "Build static library" OFF)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/solar-cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/solar-cmake/TargetArch.cmake)
+target_architecture(CMAKE_TARGET_ARCHITECTURES)
+message(STATUS "Architecture is ${CMAKE_TARGET_ARCHITECTURES}")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     message(STATUS "Compiler is Clang")
@@ -26,6 +28,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif ()
 
 ### Config love-lua
+
 if (WIN32)
     if ("${CMAKE_TARGET_ARCHITECTURES}" STREQUAL "x86_64")
         set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x64-windows/lua51.dll)
@@ -36,7 +39,7 @@ elseif (UNIX)
     if ("${CMAKE_TARGET_ARCHITECTURES}" STREQUAL "x86_64")
         set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x64-linux/libluajit-5.1.so.2)
     elseif ("${CMAKE_TARGET_ARCHITECTURES}" STREQUAL "i386")
-        set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x86-linux/libluajit-5.1.so.2o)
+        set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x86-linux/libluajit-5.1.so.2)
     endif ()
 endif ()
 
