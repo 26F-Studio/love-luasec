@@ -7,7 +7,7 @@ message(STATUS "C standard set to ${CMAKE_C_STANDARD}")
 project(luasec C CXX)
 
 option(LUASEC_BUILD_SHARED "Build shared library" ON)
-option(LUASEC_BUILD_STATIC "Build static library" OFF)
+option(LUASEC_BUILD_STATIC "Build static library" ON)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 
