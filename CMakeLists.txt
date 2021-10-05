@@ -11,6 +11,8 @@ option(LUASEC_BUILD_STATIC "Build static library" OFF)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/solar-cmake)
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     message(STATUS "Compiler is Clang")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -25,9 +27,17 @@ endif ()
 
 ### Config love-lua
 if (WIN32)
-    set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x64-windows/lua51.dll)
+    if ("${CMAKE_TARGET_ARCHITECTURES}" STREQUAL "x86_64")
+        set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x64-windows/lua51.dll)
+    elseif ("${CMAKE_TARGET_ARCHITECTURES}" STREQUAL "i386")
+        set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x86-windows/lua51.dll)
+    endif ()
 elseif (UNIX)
-    set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x64-linux/lua51.so)
+    if ("${CMAKE_TARGET_ARCHITECTURES}" STREQUAL "x86_64")
+        set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x64-linux/libluajit-5.1.so.2)
+    elseif ("${CMAKE_TARGET_ARCHITECTURES}" STREQUAL "i386")
+        set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x86-linux/libluajit-5.1.so.2o)
+    endif ()
 endif ()
 
 set(LUA_51_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/include)

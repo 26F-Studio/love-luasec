@@ -1,3 +1,6 @@
 [submodule "love-lua"]
 	path = love-lua
 	url = https://github.com/26F-Studio/love-lua.git
+[submodule "solar-cmake"]
+	path = solar-cmake
+	url = https://github.com/axr/solar-cmake.git
