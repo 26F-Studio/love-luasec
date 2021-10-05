@@ -25,9 +25,9 @@ endif ()
 
 ### Config love-lua
 if (WIN32)
-    set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/lib/lua51-win64.dll)
+    set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x64-windows/lua51.dll)
 elseif (UNIX)
-    set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/lib/lua51-linux64.so)
+    set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x64-linux/lua51.so)
 endif ()
 
 set(LUA_51_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/include)
