@@ -7,7 +7,7 @@ message(STATUS "C standard set to ${CMAKE_C_STANDARD}")
 project(luasec C CXX)
 
 option(LUASEC_BUILD_SHARED "Build shared library" ON)
-option(LUASEC_BUILD_STATIC "Build static library" ON)
+option(LUASEC_BUILD_STATIC "Build static library" OFF)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 
@@ -24,7 +24,13 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif ()
 
 ### Config love-lua
-add_subdirectory(love-lua)
+if (WIN32)
+    set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/lib/lua51-win64.dll)
+elseif (UNIX)
+    set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/lib/lua51-linux64.so)
+endif ()
+
+set(LUA_51_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/include)
 ### End
 
 ### Config openssl
@@ -48,55 +54,57 @@ elseif (UNIX)
 endif ()
 
 if (LUASEC_BUILD_STATIC)
-    add_library(${PROJECT_NAME}-static STATIC
+    add_library(lib${PROJECT_NAME} STATIC
             ${MAIN_SRC}
             ${SOCKET_SRC}
             ${PLATFORM_SRC})
-    add_library(${PROJECT_NAME}::static ALIAS ${PROJECT_NAME}-static)
+    add_library(${PROJECT_NAME}::static ALIAS lib${PROJECT_NAME})
 
-    target_link_libraries(${PROJECT_NAME}-static PRIVATE
+    target_link_libraries(lib${PROJECT_NAME} PRIVATE
             OpenSSL::SSL
             OpenSSL::Crypto
-            lua51-static)
+            ${LUA_51_LIBS})
 
-    target_include_directories(${PROJECT_NAME}-static PUBLIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_include_directories(lib${PROJECT_NAME} PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+            ${LUA_51_INCLUDE})
     if (WIN32)
-        target_include_directories(${PROJECT_NAME}-static PUBLIC
+        target_include_directories(lib${PROJECT_NAME} PUBLIC
                 ${CMAKE_CURRENT_SOURCE_DIR}/windows/include)
     elseif (UNIX)
-        target_include_directories(${PROJECT_NAME}-static PUBLIC
+        target_include_directories(lib${PROJECT_NAME} PUBLIC
                 ${CMAKE_CURRENT_SOURCE_DIR}/unix/include)
     endif ()
 
-    install(TARGETS ${PROJECT_NAME}-static EXPORT ${PROJECT_NAME}-static_Config
+    install(TARGETS lib${PROJECT_NAME} EXPORT lib${PROJECT_NAME}Config
             ARCHIVE DESTINATION lib
             LIBRARY DESTINATION lib
             RUNTIME DESTINATION bin)
 endif ()
 
 if (LUASEC_BUILD_SHARED)
-    add_library(${PROJECT_NAME}-shared SHARED ${MAIN_SRC}
+    add_library(${PROJECT_NAME} SHARED ${MAIN_SRC}
             ${SOCKET_SRC}
             ${PLATFORM_SRC})
-    add_library(${PROJECT_NAME}::shared ALIAS ${PROJECT_NAME}-shared)
+    add_library(${PROJECT_NAME}::shared ALIAS ${PROJECT_NAME})
 
-    target_link_libraries(${PROJECT_NAME}-shared PRIVATE
+    target_link_libraries(${PROJECT_NAME} PRIVATE
             OpenSSL::SSL
             OpenSSL::Crypto
-            lua51-static)
+            ${LUA_51_LIBS})
 
-    target_include_directories(${PROJECT_NAME}-shared PUBLIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_include_directories(${PROJECT_NAME} PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+            ${LUA_51_INCLUDE})
     if (WIN32)
-        target_include_directories(${PROJECT_NAME}-shared PUBLIC
+        target_include_directories(${PROJECT_NAME} PUBLIC
                 ${CMAKE_CURRENT_SOURCE_DIR}/windows/include)
     elseif (UNIX)
-        target_include_directories(${PROJECT_NAME}-shared PUBLIC
+        target_include_directories(${PROJECT_NAME} PUBLIC
                 ${CMAKE_CURRENT_SOURCE_DIR}/unix/include)
     endif ()
 
-    install(TARGETS ${PROJECT_NAME}-shared EXPORT ${PROJECT_NAME}-shared_Config
+    install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config
             ARCHIVE DESTINATION lib
             LIBRARY DESTINATION lib
             RUNTIME DESTINATION bin)
