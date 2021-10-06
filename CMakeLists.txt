@@ -18,14 +18,12 @@ option(LUASEC_BUILD_STATIC "Build static library" ON)
 
 
 ### Config compiler options
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    add_compile_options(-fPIC)
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    message(FATAL_ERROR "Does not support Microsoft compiler, please use MinGW!")
+if (NOT DEFINED TARGET_ARCH)
+    set(TARGET_ARCH NOTFOUND)
+    message(FATAL_ERROR "TARGET_ARCH is ${TARGET_ARCH}")
 endif ()
+message(STATUS "TARGET_ARCH is '${TARGET_ARCH}'")
 
-
-### Config precompiled libs
 set(ANDROID_REGEX ^android.*$)
 set(ANDROID_ARM64 android_arm64)
 set(ANDROID_ARMEABI android_armeabi)
@@ -38,13 +36,16 @@ set(WINDOWS_REGEX ^windows.*$)
 set(WINDOWS_X64 windows_x64)
 set(WINDOWS_X86 windows_x86)
 
-if (NOT DEFINED TARGET_ARCH)
-    set(TARGET_ARCH NOTFOUND)
-    message(FATAL_ERROR "TARGET_ARCH is ${TARGET_ARCH}")
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    if ("${TARGET_ARCH}" MATCHES ${LINUX_REGEX})
+        add_compile_options(-fPIC)
+    endif ()
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    message(FATAL_ERROR "Does not support Microsoft compiler, please use MinGW!")
 endif ()
 
-message(STATUS "TARGET_ARCH is '${TARGET_ARCH}'")
 
+### Config precompiled libs
 if ("${TARGET_ARCH}" MATCHES ${ANDROID_REGEX})
     message(STATUS "Linking Android...")
     if ("${TARGET_ARCH}" STREQUAL "${ANDROID_ARM64}")
