@@ -1,50 +1,92 @@
 cmake_minimum_required(VERSION 3.18)
 
-set(CMAKE_C_STANDARD 11 CACHE STRING "Cmake c standard" FORCE)
+project(luasec C)
+
+
+### Set C standard
 set(CMAKE_C_STANDARD_REQUIRED ON)
-message(STATUS "C standard set to ${CMAKE_C_STANDARD}")
+set(CMAKE_C_STANDARD 11 CACHE STRING "Cmake c standard" FORCE)
 
-project(luasec C CXX)
 
+### Print
+message(STATUS "C standard is ${CMAKE_C_STANDARD}")
+message(STATUS "Processor is ${CMAKE_SYSTEM_PROCESSOR}")
+
+### Build options
 option(LUASEC_BUILD_SHARED "Build shared library" ON)
 option(LUASEC_BUILD_STATIC "Build static library" ON)
 
-set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/solar-cmake/TargetArch.cmake)
-target_architecture(CMAKE_TARGET_ARCHITECTURES)
-message(STATUS "Architecture is ${CMAKE_TARGET_ARCHITECTURES}")
-
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    message(STATUS "Compiler is Clang")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    message(STATUS "Compiler is GCC")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
-    message(STATUS "Compiler is Intel C++")
+### Config compiler options
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    add_compile_options(-fPIC)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    message(STATUS "Compiler is Visual Studio C++")
-    add_compile_options(/std:c11 /MP)
-    add_compile_definitions(_CRT_SECURE_NO_WARNINGS LUASEC_EXPORTS)
+    message(FATAL_ERROR "Does not support Microsoft compiler, please use MinGW!")
 endif ()
 
-### Config love-lua
 
-if (WIN32)
-    if ("${CMAKE_TARGET_ARCHITECTURES}" STREQUAL "x86_64")
-        set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x64-windows/lua51.dll)
-    elseif ("${CMAKE_TARGET_ARCHITECTURES}" STREQUAL "i386")
-        set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x86-windows/lua51.dll)
-    endif ()
-elseif (UNIX)
-    if ("${CMAKE_TARGET_ARCHITECTURES}" STREQUAL "x86_64")
-        set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x64-linux/libluajit-5.1.so.2)
-    elseif ("${CMAKE_TARGET_ARCHITECTURES}" STREQUAL "i386")
-        set(LUA_51_LIBS ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/lib/x86-linux/libluajit-5.1.so.2)
-    endif ()
+### Config precompiled libs
+set(ANDROID_REGEX ^android.*$)
+set(ANDROID_ARM64 android_arm64)
+set(ANDROID_ARMEABI android_armeabi)
+set(IOS_GENERIC ios)
+set(LINUX_REGEX ^linux.*$)
+set(LINUX_X64 linux_x64)
+set(LINUX_X86 linux_x86)
+set(MACOS_GENERIC macos)
+set(WINDOWS_REGEX ^windows.*$)
+set(WINDOWS_X64 windows_x64)
+set(WINDOWS_X86 windows_x86)
+
+if (NOT DEFINED TARGET_ARCH)
+    set(TARGET_ARCH NOTFOUND)
+    message(FATAL_ERROR "TARGET_ARCH is ${TARGET_ARCH}")
 endif ()
 
-set(LUA_51_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/love-lua/include)
-### End
+message(STATUS "TARGET_ARCH is '${TARGET_ARCH}'")
+
+if ("${TARGET_ARCH}" MATCHES ${ANDROID_REGEX})
+    message(STATUS "Linking Android...")
+    if ("${TARGET_ARCH}" STREQUAL "${ANDROID_ARM64}")
+        set(LUA_51_LIB ${CMAKE_CURRENT_SOURCE_DIR}/lib/${ANDROID_ARM64}/liblove.so)
+    elseif ("${TARGET_ARCH}" STREQUAL "${ANDROID_ARMEABI}")
+        set(LUA_51_LIB ${CMAKE_CURRENT_SOURCE_DIR}/lib/${ANDROID_ARMEABI}/liblove.so)
+    else ()
+        message(FATAL_ERROR "Invalid TARGET_ARCH, supports: ${ANDROID_ARM64}, ${ANDROID_ARMEABI}")
+    endif ()
+elseif ("${TARGET_ARCH}" STREQUAL ${IOS_GENERIC})
+    message(STATUS "Linking iOS...")
+    set(LUA_51_LIB ${CMAKE_CURRENT_SOURCE_DIR}/lib/${IOS_GENERIC}/libluajit.a)
+elseif ("${TARGET_ARCH}" MATCHES ${LINUX_REGEX})
+    message(STATUS "Linking Linux...")
+    if ("${TARGET_ARCH}" STREQUAL "${LINUX_X64}")
+        set(LUA_51_LIB ${CMAKE_CURRENT_SOURCE_DIR}/lib/${LINUX_X64}/libluajit-5.1.so.2)
+    elseif ("${TARGET_ARCH}" STREQUAL "${LINUX_X86}")
+        set(LUA_51_LIB ${CMAKE_CURRENT_SOURCE_DIR}/lib/${LINUX_X86}/libluajit-5.1.so.2)
+    else ()
+        message(FATAL_ERROR "Invalid TARGET_ARCH, supports: ${LINUX_X64}, ${LINUX_X86}")
+    endif ()
+elseif ("${TARGET_ARCH}" STREQUAL ${MACOS_GENERIC})
+    message(STATUS "Linking MacOS...")
+    set(LUA_51_LIB ${CMAKE_CURRENT_SOURCE_DIR}/lib/${MACOS_GENERIC}/libluajit.dylib)
+elseif ("${TARGET_ARCH}" MATCHES ${WINDOWS_REGEX})
+    message(STATUS "Linking Windows...")
+    if ("${TARGET_ARCH}" STREQUAL "${WINDOWS_X64}")
+        set(LUA_51_LIB ${CMAKE_CURRENT_SOURCE_DIR}/lib/${WINDOWS_X64}/lua51.dll)
+    elseif ("${TARGET_ARCH}" STREQUAL "${WINDOWS_X86}")
+        set(LUA_51_LIB ${CMAKE_CURRENT_SOURCE_DIR}/lib/${WINDOWS_X86}/lua51.dll)
+    else ()
+        message(FATAL_ERROR "Invalid TARGET_ARCH, supports: ${WINDOWS_X64}, ${WINDOWS_X86}")
+    endif ()
+else ()
+    message(FATAL_ERROR "Invalid TARGET_ARCH, supports:
+    ${ANDROID_ARM64}, ${ANDROID_ARMEABI},
+    ${IOS_GENERIC},
+    ${LINUX_X64}, ${LINUX_X86},
+    ${MACOS_GENERIC},
+    ${WINDOWS_X64}, ${WINDOWS_X86}")
+endif ()
+
 
 ### Config openssl
 include(FetchContent)
@@ -56,8 +98,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(ssl_content)
 add_library(OpenSSL::SSL ALIAS ssl)
 add_library(OpenSSL::Crypto ALIAS crypto)
-### End
 
+
+### Collect source files
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/source MAIN_SRC)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/source/luasocket SOCKET_SRC)
 if (WIN32)
@@ -66,7 +109,10 @@ elseif (UNIX)
     aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/unix/source/luasocket PLATFORM_SRC)
 endif ()
 
+
+### Build static library
 if (LUASEC_BUILD_STATIC)
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/lib${PROJECT_NAME}")
     add_library(lib${PROJECT_NAME} STATIC
             ${MAIN_SRC}
             ${SOCKET_SRC}
@@ -76,11 +122,10 @@ if (LUASEC_BUILD_STATIC)
     target_link_libraries(lib${PROJECT_NAME} PRIVATE
             OpenSSL::SSL
             OpenSSL::Crypto
-            ${LUA_51_LIBS})
+            ${LUA_51_LIB})
 
     target_include_directories(lib${PROJECT_NAME} PUBLIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/include
-            ${LUA_51_INCLUDE})
+            ${CMAKE_CURRENT_SOURCE_DIR}/include)
     if (WIN32)
         target_include_directories(lib${PROJECT_NAME} PUBLIC
                 ${CMAKE_CURRENT_SOURCE_DIR}/windows/include)
@@ -93,9 +138,13 @@ if (LUASEC_BUILD_STATIC)
             ARCHIVE DESTINATION lib
             LIBRARY DESTINATION lib
             RUNTIME DESTINATION bin)
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ DESTINATION scripts/)
 endif ()
 
+
+### Build shared library
 if (LUASEC_BUILD_SHARED)
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
     add_library(${PROJECT_NAME} SHARED ${MAIN_SRC}
             ${SOCKET_SRC}
             ${PLATFORM_SRC})
@@ -104,11 +153,10 @@ if (LUASEC_BUILD_SHARED)
     target_link_libraries(${PROJECT_NAME} PRIVATE
             OpenSSL::SSL
             OpenSSL::Crypto
-            ${LUA_51_LIBS})
+            ${LUA_51_LIB})
 
     target_include_directories(${PROJECT_NAME} PUBLIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/include
-            ${LUA_51_INCLUDE})
+            ${CMAKE_CURRENT_SOURCE_DIR}/include)
     if (WIN32)
         target_include_directories(${PROJECT_NAME} PUBLIC
                 ${CMAKE_CURRENT_SOURCE_DIR}/windows/include)
@@ -121,6 +169,5 @@ if (LUASEC_BUILD_SHARED)
             ARCHIVE DESTINATION lib
             LIBRARY DESTINATION lib
             RUNTIME DESTINATION bin)
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/ DESTINATION scripts/)
 endif ()
-
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lua/ DESTINATION lua/)
