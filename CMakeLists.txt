@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
+### Create project
 project(luasec C)
 
 
@@ -11,6 +12,7 @@ set(CMAKE_C_STANDARD 11 CACHE STRING "Cmake c standard" FORCE)
 ### Print
 message(STATUS "C standard is ${CMAKE_C_STANDARD}")
 message(STATUS "Processor is ${CMAKE_SYSTEM_PROCESSOR}")
+
 
 ### Build options
 option(LUASEC_BUILD_SHARED "Build shared library" ON)
