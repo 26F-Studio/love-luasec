@@ -14,5 +14,5 @@ cmake -DCMAKE_BUILD_TYPE=Release `
 -DTARGET_ARCH=android_arm64 `
 -DCMAKE_DEPENDS_USE_COMPILER=FALSE `
 -G "CodeBlocks - MinGW Makefiles" ..
-cmake --build . --config Release --target luasec -- -j 12
-Pop-Location
+& "$env:ANDROID_NDK_ROOT\prebuilt\windows-x86_64\bin\make.exe" -j 12
+& "$env:ANDROID_NDK_ROOT\prebuilt\windows-x86_64\bin\make.exe" install
