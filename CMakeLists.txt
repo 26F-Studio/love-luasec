@@ -38,11 +38,11 @@ set(WINDOWS_REGEX ^windows.*$)
 set(WINDOWS_X64 windows_x64)
 set(WINDOWS_X86 windows_x86)
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    if ("${TARGET_ARCH}" MATCHES ${LINUX_REGEX})
-        add_compile_options(-fPIC)
-    endif ()
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+if ("${TARGET_ARCH}" MATCHES ${LINUX_REGEX})
+    add_compile_options(-fPIC)
+endif ()
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     message(FATAL_ERROR "Does not support Microsoft compiler, please use MinGW!")
 endif ()
 
